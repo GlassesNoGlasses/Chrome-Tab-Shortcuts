@@ -1,0 +1,19 @@
+
+.main-body {
+    display: flex;
+    margin: 0%;
+    padding: 0%;
+    border: red double 4px;
+    height: 750px;
+    width: 500px;
+}
+
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    height: 5%;
+    width: 100%;
+    margin: 2px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #e0e0e0;
+}
