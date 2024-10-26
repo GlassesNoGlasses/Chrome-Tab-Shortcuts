@@ -15,9 +15,13 @@ export const Log = (...others) => {
   console.log(others.join(' '));
 }
 
-const CreateTabs = (urls, active_url) => {
+const CreateTabs = (urls, active_url, pinned_urls) => {
   urls.forEach(url => {
-    chrome.tabs.create({ url: url, active: active_url && url.localeCompare(active_url)});
+    chrome.tabs.create({ 
+      url: url, 
+      active: active_url && !url.localeCompare(active_url),
+      pinned: pinned_urls.includes(url)
+    });
   });
 }
 
@@ -65,7 +69,7 @@ export class MacroController {
 
     if (macro && macro in this.keyMapping) {
       const active_url = this.keyMapping[macro].active_url;
-      CreateTabs(this.keyMapping[macro], active_url ?  active_url : null);
+      CreateTabs(this.keyMapping[macro].urls, active_url ?  active_url : null, this.keyMapping[macro].pinned_urls);
     }
   }
 }

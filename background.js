@@ -19,8 +19,8 @@ const ResetLocalStorage = () => {
 }
 
 const PopulateLocalStorage = async () => {
-  // storage format: {macro: {urls: [url1, url2, ...], active_url: url2}}
-  await SetToLocale('shift+2', {urls: ['https://www.facebook.com', 'https://www.youtube.com'], active_url: "https://www.youtube.com"});
+  // storage format: {macro: {urls: [url1, url2, ...], active_url: url2, pinned_urls: [url1]}}
+  await SetToLocale('shift+2', {urls: ['https://www.facebook.com', 'https://www.youtube.com'], active_url: "https://www.youtube.com", pinned_urls: ['https://www.facebook.com']});
 }
 
 // main functions
@@ -33,6 +33,9 @@ const StartUp = async () => {
   console.log("Fetched From Local: ", keys);
   if (keys) macroController.SetKeyMapping(keys);
   console.log("Setted to Controller: ", macroController.keyMapping);
+  for (let key of Object.keys(macroController.keyMapping)) {
+    macroController.ExecuteMacro(key);
+  }
 }
 
 // StartUp Background
