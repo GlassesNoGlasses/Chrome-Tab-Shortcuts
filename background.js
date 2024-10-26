@@ -1,8 +1,8 @@
 
-import { FetchFromLocal, Log, MacroController } from "./helper.js";
+import { FetchFromLocal, Log, MacroController, SetToLocale } from "./helper.js";
 
 // Variables
-let macroController;
+let macroController = new MacroController({});
 
 // helper functions
 const FilterKeys = (keys) => {
@@ -13,20 +13,26 @@ const FormatKeys = (keys) => {
   keys.sort((key1, key2) => key2.length - key1.length || key2.localeCompare(key1));
 }
 
+// testing functions
+const ResetLocalStorage = () => {
+  chrome.storage.local.clear();
+}
+
+const PopulateLocalStorage = async () => {
+  // storage format: {macro: {urls: [url1, url2, ...], active_url: url2}}
+  await SetToLocale('shift+2', {urls: ['https://www.facebook.com', 'https://www.youtube.com'], active_url: "https://www.youtube.com"});
+}
 
 // main functions
-const StartUp = () => {
-  // Fetch keyMapping from local storage
-  (async () => {
-    // format of storage {'macros': {'key1+key2': 'macro1', 'key3+key4': 'macro2'}}
-    const keys = await FetchFromLocal('macros');
-    Log("Background Fetched:", keys, "from local storage");
-    if (keys) macroController = new MacroController(keys);
-  })();
+const StartUp = async () => {
+  ResetLocalStorage();
+  await PopulateLocalStorage();
 
-
-
-  // Listen for changes in keyMapping
+  
+  const keys = await FetchFromLocal(null);
+  console.log("Fetched From Local: ", keys);
+  if (keys) macroController.SetKeyMapping(keys);
+  console.log("Setted to Controller: ", macroController.keyMapping);
 }
 
 // StartUp Background
@@ -45,3 +51,14 @@ chrome.runtime.onMessage.addListener(
         console.log("MACRO: ", macroTabs);
     }
 );
+
+// Listen for changes and ensure changes are valid
+// chrome.storage.onChanged.addListener((changes) => {
+//   for (let storage_key in changes) {
+//     if (storage_key === 'macros') {
+//       for (let key in changes[storage_key].newValue) {
+//         if (! key in macroController.keyMapping || )
+//       }
+//     }
+//   }
+// })

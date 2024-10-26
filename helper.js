@@ -1,7 +1,7 @@
 
 // helper functions
 export const FetchFromLocal = async (key) => {
-    return await chrome.storage.local.get([key]);
+    return await chrome.storage.local.get(key);
   }
   
 export const SetToLocale = async (key, value) => {
@@ -15,9 +15,19 @@ export const Log = (...others) => {
   console.log(others.join(' '));
 }
 
+const CreateTabs = (urls, active_url) => {
+  urls.forEach(url => {
+    chrome.tabs.create({ url: url, active: active_url && url.localeCompare(active_url)});
+  });
+}
+
 
 export class MacroController {
   constructor(keyMapping) {
+    this.keyMapping = keyMapping;
+  }
+
+  SetKeyMapping(keyMapping) {
     this.keyMapping = keyMapping;
   }
 
@@ -44,9 +54,19 @@ export class MacroController {
     await SetToLocale('macros', this.keyMapping)
   }
 
+  /**
+ * [someFunction description]
+ * @param  {[type]} arg1 [description]
+ * @param  {[type]} arg2 [description]
+ * @return {[type]}      [description]
+ */
   ExecuteMacro(macro) {
-    // Execute the macro
-    console.log("Executing Macro: ", macro);
+    console.log("Executing Macro");
+
+    if (macro && macro in this.keyMapping) {
+      const active_url = this.keyMapping[macro].active_url;
+      CreateTabs(this.keyMapping[macro], active_url ?  active_url : null);
+    }
   }
 }
 

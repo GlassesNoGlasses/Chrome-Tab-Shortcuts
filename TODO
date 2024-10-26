@@ -3,3 +3,15 @@
     a. Validate fetching adn setting from storage somehow
 2. Create UI.
 3. Add functionality to UI.
+4. Document functions
+
+
+Current Funtionalities:
+1. Store macros
+2. Create custom macros
+3. Active tab selection
+
+
+Wanted Functionalities:
+1. Drag and drop UI for macro URLs
+2. Pinning tabs
