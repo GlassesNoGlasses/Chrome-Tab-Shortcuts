@@ -13,6 +13,24 @@
     <button id="my-shortcuts-tab">My Shortcuts</button>
     <button id="settings-tab">Settings</button>
   </div>
+  <div class="quick-options">
+    <button id="quick-new-macro" class="option">
+      <img src="images/add_circle.svg" alt="Add" class="icon">
+      <span class="quick-new-macro-text">New Macro</span>
+    </button>
+  </div>
+
+  <div id="add-macro-display" class="modal">
+    <form id="add-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      <label for="url">URL(s):</label>
+      <input type="text" id="url" name="url" required>
+      <label for="shortcut">Shortcut:</label>
+      <input type="text" id="shortcut" name="shortcut" required>
+      <button id="add-macro">Add</button>
+    </form>
+  </div>
 </body>
 
 <script src="popup.js"></script>

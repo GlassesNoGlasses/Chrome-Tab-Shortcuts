@@ -35,9 +35,13 @@ export class MacroController {
     this.keyMapping = keyMapping;
   }
 
-  ValidKeyMapping(keys) {
-    const parsed_keys = keys.join('+');
+  FetchMacros(macro_keys) {
+    const parsed_keys = macro_keys.join('+');
     return parsed_keys in this.keyMapping ? this.keyMapping[parsed_keys] : null;
+  }
+
+  ValidMacro(macro) {
+    return macro in this.keyMapping;
   }
 
   async SaveMacro(parsed_keys, macro) {

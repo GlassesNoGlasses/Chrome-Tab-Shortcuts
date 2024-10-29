@@ -33,9 +33,9 @@ const StartUp = async () => {
   console.log("Fetched From Local: ", keys);
   if (keys) macroController.SetKeyMapping(keys);
   console.log("Setted to Controller: ", macroController.keyMapping);
-  for (let key of Object.keys(macroController.keyMapping)) {
-    macroController.ExecuteMacro(key);
-  }
+  // for (let key of Object.keys(macroController.keyMapping)) {
+  //   macroController.ExecuteMacro(key);
+  // }
 }
 
 // StartUp Background
@@ -50,18 +50,21 @@ chrome.runtime.onMessage.addListener(
         const keys = FilterKeys(request['keys']);
         FormatKeys(keys);
         console.log("FORMATTED KEYS: ", keys);
-        const macroTabs = macroController.ValidKeyMapping(keys);
+        const macroTabs = macroController.FetchMacros(keys);
         console.log("MACRO: ", macroTabs);
     }
 );
 
 // Listen for changes and ensure changes are valid
-// chrome.storage.onChanged.addListener((changes) => {
-//   for (let storage_key in changes) {
-//     if (storage_key === 'macros') {
-//       for (let key in changes[storage_key].newValue) {
-//         if (! key in macroController.keyMapping || )
-//       }
-//     }
-//   }
-// })
+chrome.storage.onChanged.addListener((changes) => {
+  for (let storage_key in changes) {
+    console.log(storage_key);
+    if (macroController.ValidMacro(storage_key) && changes[storage_key].newValue) {
+      // Macro already exists & macro value updated
+      // check if macro value is valid
+    } else {
+      // Macro does not exist anymore
+      // prompt user of deletion
+    }
+  }
+})
