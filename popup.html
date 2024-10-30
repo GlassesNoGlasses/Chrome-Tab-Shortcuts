@@ -14,14 +14,14 @@
     <button id="settings-tab">Settings</button>
   </div>
   <div class="quick-options">
-    <button id="quick-new-macro" class="option">
+    <button id="quick-new-macro" class="option" onclick="">
       <img src="images/add_circle.svg" alt="Add" class="icon">
       <span class="quick-new-macro-text">New Macro</span>
     </button>
   </div>
 
-  <div id="add-macro-display" class="modal">
-    <form id="add-form">
+  <div id="add-macro-shortcut" class="modal">
+    <form id="add-form" class="add-form">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" required>
       <label for="url">URL(s):</label>
@@ -33,6 +33,6 @@
   </div>
 </body>
 
-<script src="popup.js"></script>
 <script src="helper.js"></script>
+<script src="popup.js"></script>
 </html>

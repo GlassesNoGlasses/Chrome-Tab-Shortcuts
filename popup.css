@@ -46,3 +46,12 @@
     height: max(750px, 100%);
     width: max(500, 100%);
 }
+
+.add-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
