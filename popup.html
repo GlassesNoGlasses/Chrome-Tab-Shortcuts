@@ -9,16 +9,28 @@
 </head>
 
 <body class="main-body">
-  <div class="nav-bar">
-    <button id="my-shortcuts-tab">My Shortcuts</button>
-    <button id="settings-tab">Settings</button>
+  <div class="content">
+    <div id="my-shortcuts" class="macro-container">
+      <h1>My Shortcuts</h1>
+      <div id="shortcuts" class="macro-list">
+        <span class="macro-item">
+          <span class="macro-name">Google</span>
+          <span class="macro-url">https://www.google.com</span>
+          <span class="macro-shortcut">Ctrl+Shift+G</span>
+          <button class="macro-delete">Delete</button>
+        </span>
+      </div>
+    </div>
+    <div class="quick-options-container">
+      <div class="quick-options">
+          <button id="new-macro-button" class="option">
+            <img src="images/add_circle.svg" alt="Add" class="icon">
+            <span class="quick-new-macro-text">New Macro</span>
+          </button>
+      </div>
+    </div>
   </div>
-  <div class="quick-options">
-    <button id="quick-new-macro" class="option" onclick="">
-      <img src="images/add_circle.svg" alt="Add" class="icon">
-      <span class="quick-new-macro-text">New Macro</span>
-    </button>
-  </div>
+
 
   <div id="add-macro-shortcut" class="modal">
     <form id="add-form" class="add-form">
@@ -26,13 +38,12 @@
       <input type="text" id="name" name="name" required>
       <label for="url">URL(s):</label>
       <input type="text" id="url" name="url" required>
-      <label for="shortcut">Shortcut:</label>
-      <input type="text" id="shortcut" name="shortcut" required>
+      <label for="shortcut-key-input">Shortcut:</label>
+      <input type="text" id="shortcut-key-input" name="shortcut" required>
       <button id="add-macro">Add</button>
     </form>
   </div>
 </body>
 
-<script src="helper.js"></script>
 <script src="popup.js"></script>
 </html>
