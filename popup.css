@@ -114,3 +114,8 @@
     width: 100%;
     border: 2px solid red;
 }
+
+.delete-icon {
+    height: 10px;
+    width: 10px;
+}

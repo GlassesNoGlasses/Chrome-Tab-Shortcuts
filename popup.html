@@ -13,12 +13,11 @@
     <div id="my-shortcuts" class="macro-container">
       <h1>My Shortcuts</h1>
       <div id="shortcuts" class="macro-list">
-        <span class="macro-item">
-          <span class="macro-name">Google</span>
-          <span class="macro-url">https://www.google.com</span>
-          <span class="macro-shortcut">Ctrl+Shift+G</span>
+        <div class="macro-item">
+          <div class="macro-name">[Macro]: [Macro_Name]</div>
+          <span class="macro-urls">https://www.google.com</span>
           <button class="macro-delete">Delete</button>
-        </span>
+        </div>
       </div>
     </div>
     <div class="quick-options-container">
@@ -34,10 +33,10 @@
 
   <div id="add-macro-shortcut" class="modal">
     <form id="add-form" class="add-form">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-      <label for="url">URL(s):</label>
-      <input type="text" id="url" name="url" required>
+      <label for="form-name">Name:</label>
+      <input type="text" id="form-name" name="name" required>
+      <label for="form-url">URL(s):</label>
+      <input type="text" id="form-url" name="url" required>
       <label for="shortcut-key-input">Shortcut:</label>
       <input type="text" id="shortcut-key-input" name="shortcut" required>
       <button id="add-macro">Add</button>
