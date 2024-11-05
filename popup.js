@@ -143,28 +143,65 @@ const AddMacroFormSubmit = () => {
     SaveMacro(name, urls, key_macro);
 }
 
-const RecordKeyboardInputs = () => {
-    console.log("Recording Keyboard Inputs");
-    state.keysPressed = [];
-    state.isModifierKey = false;
 
-    document.addEventListener('keydown', (event) => {
+const RecordKeyboardInputs = (id) => {
+    console.log("Recording Keyboard Inputs");
+
+    AddEventListenerById(id, "keydown", (event) => {
         !event.repeat && state.keysPressed.push(event.key.toLowerCase());
         state.isModifierKey = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
     }, false);
+
+    AddEventListenerById(id, "keyup", () => {
+        console.log("Keys Pressed: ", state.keysPressed);
+        console.log("Modifier Key: ", state.isModifierKey);
+        state.keysPressed = [];
+        state.isModifierKey = false;
+    });
 }
 
-const RemoveKeyboardRecorder = () => {
-    document.removeEventListener('keydown', RecordKeyboardInputs);
-    console.log("KEYS PRESSED: ", state.keysPressed);
-    console.log("IS MODIFIER KEY: ", state.isModifierKey);
+const RemoveKeyboardRecorder = (id) => {
+    RemoveEventListenerById(id, "keydown");
+    RemoveEventListenerById(id, "keyup");
+}
+
+const AddEventListenerById = (id, event, callback = null) => {
+    try {
+        const element = document.getElementById(id);
+        element.addEventListener(event, callback);
+    } catch (error) {
+        console.error(`Error adding event listener to ${id}: ${error}`);
+    }
+}
+
+const RemoveEventListenerById = (id, event, callback = null) => {
+    try {
+        const element = document.getElementById(id);
+        element.removeEventListener(event, callback);
+    } catch (error) {
+        console.error(`Error removing event listener from ${id}: ${error}`);
+    }
 }
 
 // activates on popup.html load
+const InitializePopup = () => {
+    console.log("Initializing Popup");
 
+    AddEventListenerById("new-macro-button", "click", ToggleMacroForm);
+    AddEventListenerById("add-macro", "click", AddMacroFormSubmit);
+    RecordKeyboardInputs("body");
+    // AddEventListenerById("shortcut-key-input", "focusin", RecordKeyboardInputs);
+    // AddEventListenerById("shortcut-key-input", "focusout", RemoveKeyboardRecorder);
 
-// handle onClick listeners
-document.getElementById("new-macro-button").addEventListener("click", () => ToggleMacroForm());
-document.getElementById("add-macro").addEventListener("click", () => AddMacroFormSubmit());
-document.getElementById("shortcut-key-input").addEventListener("focusin", () => RecordKeyboardInputs());
-document.getElementById("shortcut-key-input").addEventListener("focusout", () => RemoveKeyboardRecorder());
+    // get all macros from local storage
+    chrome.storage.local.get(null, (result) => {
+        console.log("Retrieved Macros: ", result);
+        for (let key in result) {
+            const macro = result[key];
+            AddNewMacro(macro.name, macro.urls, key);
+        }
+    });
+}
+
+InitializePopup();
+
