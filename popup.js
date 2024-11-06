@@ -5,6 +5,7 @@ let state = {
     add_macro_form: false, // true if add macro form is visible
     keysPressed: [], // keys pressed by user
     isModifierKey: false, // true if a modifier key is pressed
+    current_macros: {} // current macros saved in local storage
 }
 
 // helper functions
@@ -144,7 +145,7 @@ const AddMacroFormSubmit = () => {
 }
 
 
-const RecordKeyboardInputs = (id) => {
+const RecordKeyboardInputs = (id, keyupCallback) => {
     console.log("Recording Keyboard Inputs");
 
     AddEventListenerById(id, "keydown", (event) => {
@@ -153,6 +154,7 @@ const RecordKeyboardInputs = (id) => {
     }, false);
 
     AddEventListenerById(id, "keyup", () => {
+        keyupCallback && keyupCallback();
         console.log("Keys Pressed: ", state.keysPressed);
         console.log("Modifier Key: ", state.isModifierKey);
         state.keysPressed = [];
@@ -183,13 +185,36 @@ const RemoveEventListenerById = (id, event, callback = null) => {
     }
 }
 
+const CreateTabs = () => {
+    if (!state.keysPressed.length || !state.isModifierKey) return;
+
+    try {
+        const key_macro = FilterAndFormatKeys(state.keysPressed);
+        if (!state.current_macros[key_macro]) return;
+    
+        const urls = state.current_macros[key_macro].urls;
+        const active_url = state.current_macros[key_macro].active_url;
+        const pinned_urls = state.current_macros[key_macro].pinned_urls;
+    
+        urls.forEach(url => {
+            chrome.tabs.create({ 
+            url: url, 
+            active: active_url && !url.localeCompare(active_url),
+            pinned: pinned_urls.includes(url)
+            });
+        });
+    } catch (error) {
+        console.error(`Failed to initialize macro: ${error}`);
+    }
+}
+
 // activates on popup.html load
 const InitializePopup = () => {
     console.log("Initializing Popup");
 
     AddEventListenerById("new-macro-button", "click", ToggleMacroForm);
     AddEventListenerById("add-macro", "click", AddMacroFormSubmit);
-    RecordKeyboardInputs("body");
+    RecordKeyboardInputs("body", CreateTabs);
     // AddEventListenerById("shortcut-key-input", "focusin", RecordKeyboardInputs);
     // AddEventListenerById("shortcut-key-input", "focusout", RemoveKeyboardRecorder);
 
@@ -198,6 +223,7 @@ const InitializePopup = () => {
         console.log("Retrieved Macros: ", result);
         for (let key in result) {
             const macro = result[key];
+            state.current_macros[key] = {...macro};
             AddNewMacro(macro.name, macro.urls, key);
         }
     });
