@@ -155,8 +155,6 @@ const RecordKeyboardInputs = (id, keyupCallback) => {
 
     AddEventListenerById(id, "keyup", () => {
         keyupCallback && keyupCallback();
-        console.log("Keys Pressed: ", state.keysPressed);
-        console.log("Modifier Key: ", state.isModifierKey);
         state.keysPressed = [];
         state.isModifierKey = false;
     });
@@ -183,6 +181,23 @@ const RemoveEventListenerById = (id, event, callback = null) => {
     } catch (error) {
         console.error(`Error removing event listener from ${id}: ${error}`);
     }
+}
+
+const OnShortcutKeyInputFocus = () => {
+    //TODO: Fix double key press bug
+    console.log("Focused In");
+    RemoveKeyboardRecorder("body");
+    RecordKeyboardInputs("shortcut-key-input", () => {
+        const shortcut_key_input = FilterAndFormatKeys(state.keysPressed);
+        if (shortcut_key_input) {
+            document.getElementById("shortcut-key-input").value = shortcut_key_input;
+        }
+    });
+};
+
+const OnShortcutKeyInputBlur = () => {
+    RemoveKeyboardRecorder("shortcut-key-input");
+    RecordKeyboardInputs("body", CreateTabs);
 }
 
 const CreateTabs = () => {
@@ -212,11 +227,12 @@ const CreateTabs = () => {
 const InitializePopup = () => {
     console.log("Initializing Popup");
 
+    // add event listeners
     AddEventListenerById("new-macro-button", "click", ToggleMacroForm);
     AddEventListenerById("add-macro", "click", AddMacroFormSubmit);
     RecordKeyboardInputs("body", CreateTabs);
-    // AddEventListenerById("shortcut-key-input", "focusin", RecordKeyboardInputs);
-    // AddEventListenerById("shortcut-key-input", "focusout", RemoveKeyboardRecorder);
+    AddEventListenerById("shortcut-key-input", "focusin", OnShortcutKeyInputFocus);
+    AddEventListenerById("shortcut-key-input", "focusout", OnShortcutKeyInputBlur);
 
     // get all macros from local storage
     chrome.storage.local.get(null, (result) => {
