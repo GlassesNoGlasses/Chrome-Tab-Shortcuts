@@ -101,9 +101,8 @@ const SaveMacro = (name, urls, key_macro) => {
         };
 
         // parse user inputted keys
-        const parsed_keys = FilterAndFormatKeys(key_macro);
         const obj = {};
-        obj[parsed_keys] = {urls: urls, name: name};
+        obj[key_macro] = {urls: urls, name: name};
 
         // save to local storage and add to popup if successful
         chrome.storage.local.set(obj).then((result) => {
@@ -137,9 +136,13 @@ const ToggleMacroForm = () => {
 
 const AddMacroFormSubmit = () => {
     const name = document.getElementById("form-name").value;
-    const urls = document.getElementById("form-urls").value.split(',');
-    const key_macro = state.keysPressed;
-    console.log("key_macros: ", key_macro);
+    const key_macro = document.getElementById("shortcut-key-input").value;
+    const url_list = document.getElementsByClassName("url-option");
+    let urls = [];
+
+    for (let url of url_list) {
+        urls.push(url.value);
+    }
 
     SaveMacro(name, urls, key_macro);
 }
@@ -223,6 +226,16 @@ const CreateTabs = () => {
     }
 }
 
+const AddNewURLOption = () => {
+    const url_input = document.getElementById("added-urls");
+    const url_option = document.createElement("input");
+    url_option.classList.add("url-option");
+    url_option.placeholder = "Enter URL";
+    url_option.required = true;
+    url_option.name = "url_option";
+    url_input.appendChild(url_option);
+};
+
 // activates on popup.html load
 const InitializePopup = () => {
     console.log("Initializing Popup");
@@ -233,6 +246,7 @@ const InitializePopup = () => {
     RecordKeyboardInputs("body", CreateTabs);
     AddEventListenerById("shortcut-key-input", "focusin", OnShortcutKeyInputFocus);
     AddEventListenerById("shortcut-key-input", "focusout", OnShortcutKeyInputBlur);
+    AddEventListenerById("add-url", "click", AddNewURLOption);
 
     // get all macros from local storage
     chrome.storage.local.get(null, (result) => {
