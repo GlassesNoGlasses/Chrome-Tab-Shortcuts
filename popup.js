@@ -16,7 +16,7 @@ const FilterAndFormatKeys = (keys) => {
 }
   
 
-const UpdateElementComponent = (element, component, value = null) => {
+function UpdateElementComponent(element, component, value = null) {
     if (!element || !component) {
         return;
     }
@@ -75,13 +75,20 @@ const CreateMacroElement = (name, urls, key_macro) => {
     // add listeners
     macro_delete.addEventListener("click", () => {
         console.log("Deleting macro: ", name);
-        macro_name.removeEventListener("click");
+        macro_name.removeEventListener("click", UpdateElementComponent);
+        // TODO: add yes or no confirmation
+        chrome.storage.local.remove(key_macro).then((result) => {
+            console.log("Delete Result: ", result);
+            if (chrome.runtime.lastError) {
+                console.error(chrome.runtime.lastError);
+                return;
+            }
+
+            macro_div.remove();
+        });
     });
 
-    macro_name.addEventListener("click", () => {
-        console.log("Opening macro: ", name);
-        UpdateElementComponent(macro_urls, "display", macro_urls.style.display === "none" ? "flex" : "none");
-    });
+    macro_name.addEventListener("click", UpdateElementComponent(macro_urls, "display", macro_urls.style.display === "none" ? "flex" : "none"));
 
     // append elements to macro_div
     macro_name.appendChild(macro_urls);
