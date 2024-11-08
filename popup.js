@@ -74,18 +74,23 @@ const CreateMacroElement = (name, urls, key_macro) => {
 
     // add listeners
     macro_delete.addEventListener("click", () => {
-        console.log("Deleting macro: ", name);
-        macro_name.removeEventListener("click", UpdateElementComponent);
-        // TODO: add yes or no confirmation
-        chrome.storage.local.remove(key_macro).then((result) => {
-            console.log("Delete Result: ", result);
-            if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
-                return;
-            }
+        const content = document.getElementById("main-content");
 
-            macro_div.remove();
+        macro_name.removeEventListener("click", UpdateElementComponent);
+        UpdateElementComponent(content, "class", "content-shadow");
+        
+        const popup = ConfirmationPopup(`Are you sure you want to delete ${name}?`, () => {
+            chrome.storage.local.remove(key_macro).then((result) => {
+                if (chrome.runtime.lastError) {
+                    console.error(chrome.runtime.lastError);
+                    return;
+                }
+                macro_div.remove();
+                UpdateElementComponent(content, "class", "content");
+            });
         });
+
+        content.appendChild(popup);
     });
 
     macro_name.addEventListener("click", UpdateElementComponent(macro_urls, "display", macro_urls.style.display === "none" ? "flex" : "none"));
@@ -97,6 +102,43 @@ const CreateMacroElement = (name, urls, key_macro) => {
     macro_div.appendChild(macro_delete);
 
     return macro_div;
+}
+
+const ConfirmationPopup = (message, onAcceptCallback) => {
+    const popup_modal = document.createElement("div");
+    const popup = document.createElement("div");
+    const popup_message = document.createElement("p");
+    const popup_buttons = document.createElement("div");
+    const popup_yes = document.createElement("button");
+    const popup_no = document.createElement("button");
+
+    popup_modal.classList.add("modal");
+    popup.classList.add("confirmation-popup");
+    popup_buttons.classList.add("confirmation-buttons");
+    popup_message.textContent = message;
+    popup_yes.textContent = "Yes";
+    popup_no.textContent = "No";
+
+    popup_yes.addEventListener("click", () => {
+        onAcceptCallback && onAcceptCallback();
+        popup_modal.remove();
+        return true;
+    });
+
+    popup_no.addEventListener("click", () => {
+        popup_modal.remove();
+        return false;
+    });
+
+    popup_buttons.appendChild(popup_yes);
+    popup_buttons.appendChild(popup_no);
+    popup.appendChild(popup_message);
+    popup.appendChild(popup_buttons);
+    popup_modal.appendChild(popup);
+
+    popup_modal.style.display = "flex";
+
+    return popup_modal;
 }
 
 const AddNewMacro = (name, urls, key_macro) => {
