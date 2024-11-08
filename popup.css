@@ -30,10 +30,11 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 5%;
+    height: fit-content;
     width: 100%;
-    position: absolute;
+    position: fixed;
     bottom: 0;
+    margin-right: 4px;
 }
 
 .quick-options {
@@ -42,7 +43,7 @@
     height: fit-content;
     width: 100%;
     padding-left: 2px;
-    padding-right: 2px;
+    padding-right: 9.5px;
 }
 
 .icon {
@@ -53,9 +54,11 @@
 .modal {
     display: none;
     position: absolute;
-    height: max(750px);
-    width: max(500);
+    height: 100%;
+    width: 100%;
     z-index: 1;
+    top: 0;
+    left: 0;
 }
 
 .add-form {
@@ -74,6 +77,17 @@
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
+}
+
+.content-shadow {
+    height: 95%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    opacity: 0.2;
+    background-color: gray;
 }
 
 .macro-container {
@@ -137,6 +151,7 @@
     flex-direction: row;
     justify-content: center;
     height: fit-content;
+    overflow-y: auto;
     width: 100%;
 }
 

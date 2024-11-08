@@ -16,13 +16,28 @@ const FilterAndFormatKeys = (keys) => {
 }
   
 
-const UpdateElementDisplay = (element, display) => {
-    if (!element) {
+const UpdateElementComponent = (element, component, value = null) => {
+    if (!element || !component) {
         return;
     }
 
-    element.style.display = display;
-}
+    try {
+        switch (component.toLowerCase().trim()) {
+            case "display":
+                element.style.display = value;
+                break;
+            case "class":
+                console.log("value: ", value);
+                element.className = value;
+                break;
+            default:
+                break;
+        }
+    } catch (error) {
+        console.error(`Failed to update component: ${component}`);
+    }
+};
+
 
 const CreateMacroElement = (name, urls, key_macro) => {
     if (!name || !urls || !key_macro) {
@@ -65,7 +80,7 @@ const CreateMacroElement = (name, urls, key_macro) => {
 
     macro_name.addEventListener("click", () => {
         console.log("Opening macro: ", name);
-        UpdateElementDisplay(macro_urls, macro_urls.style.display === "none" ? "flex" : "none");
+        UpdateElementComponent(macro_urls, "display", macro_urls.style.display === "none" ? "flex" : "none");
     });
 
     // append elements to macro_div
@@ -123,15 +138,17 @@ const SaveMacro = (name, urls, key_macro) => {
 
 const ToggleMacroForm = () => {
     const add_macro_div = document.getElementById("add-macro-shortcut");
+    const main_content = document.getElementById("main-content");
 
     if (state.add_macro_form) {
-        UpdateElementDisplay(add_macro_div, "none");
+        UpdateElementComponent(add_macro_div, "display", "none");
         state.add_macro_form = false;
         return;
     }
 
     const form = document.getElementById("add-form");
-    UpdateElementDisplay(add_macro_div, "flex");
+    UpdateElementComponent(main_content, "class", "content-shadow");
+    UpdateElementComponent(add_macro_div, "display", "flex");
 }
 
 const AddMacroFormSubmit = () => {
