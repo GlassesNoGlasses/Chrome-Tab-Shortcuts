@@ -1,4 +1,6 @@
 
+// TODO: Remove unecessary event listeners
+
 // state variables
 let state = {
     // set state variables here
@@ -89,8 +91,7 @@ const CreateMacroElement = (name, urls, key_macro) => {
                 UpdateElementComponent(content, "class", "content");
             });
         });
-
-        content.appendChild(popup);
+        document.body.appendChild(popup);
     });
 
     macro_name.addEventListener("click", UpdateElementComponent(macro_urls, "display", macro_urls.style.display === "none" ? "flex" : "none"));
@@ -105,14 +106,14 @@ const CreateMacroElement = (name, urls, key_macro) => {
 }
 
 const ConfirmationPopup = (message, onAcceptCallback) => {
-    const popup_modal = document.createElement("div");
+    const popup_container = document.createElement("div");
     const popup = document.createElement("div");
     const popup_message = document.createElement("p");
     const popup_buttons = document.createElement("div");
     const popup_yes = document.createElement("button");
     const popup_no = document.createElement("button");
 
-    popup_modal.classList.add("modal");
+    popup_container.classList.add("confirmation-popup-container");
     popup.classList.add("confirmation-popup");
     popup_buttons.classList.add("confirmation-buttons");
     popup_message.textContent = message;
@@ -121,12 +122,12 @@ const ConfirmationPopup = (message, onAcceptCallback) => {
 
     popup_yes.addEventListener("click", () => {
         onAcceptCallback && onAcceptCallback();
-        popup_modal.remove();
+        popup_container.remove();
         return true;
     });
 
     popup_no.addEventListener("click", () => {
-        popup_modal.remove();
+        popup_container.remove();
         return false;
     });
 
@@ -134,11 +135,9 @@ const ConfirmationPopup = (message, onAcceptCallback) => {
     popup_buttons.appendChild(popup_no);
     popup.appendChild(popup_message);
     popup.appendChild(popup_buttons);
-    popup_modal.appendChild(popup);
+    popup_container.appendChild(popup);
 
-    popup_modal.style.display = "flex";
-
-    return popup_modal;
+    return popup_container;
 }
 
 const AddNewMacro = (name, urls, key_macro) => {
