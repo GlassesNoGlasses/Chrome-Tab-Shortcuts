@@ -53,18 +53,22 @@ const CreateMacroElement = (name, urls, key_macro) => {
     const macro_urls = document.createElement("div");
     const macro_delete = document.createElement("button");
     const macro_delete_icon = document.createElement("img");
+    const macro_edit = document.createElement("button");
+    const macro_edit_icon = document.createElement("img");
 
     // add classes to elements
     macro_div.classList.add("macro-item");
     macro_name.classList.add("macro-name");
     macro_urls.classList.add("macro-urls");
-    macro_delete.classList.add("macro-delete");
-    macro_delete_icon.classList.add("delete-icon");
+    macro_delete_icon.classList.add("short-icon");
+    macro_edit_icon.classList.add("short-icon");
+
 
     // set content
     macro_div.id = name;
     macro_name.textContent = `${key_macro}: ${name}`;
     macro_delete_icon.src = "./images/trash_can.svg";
+    macro_edit_icon.src = "./images/edit.svg";
     
     for (let url of urls) {
         const url_anchor = document.createElement("a");
@@ -81,7 +85,7 @@ const CreateMacroElement = (name, urls, key_macro) => {
         macro_name.removeEventListener("click", UpdateElementComponent);
         UpdateElementComponent(content, "class", "content-shadow");
         
-        const popup = ConfirmationPopup(`Are you sure you want to delete ${name}?`, () => {
+        const popup = ConfirmationPopup(`Are you sure you want to delete macro: ${name}?`, () => {
             chrome.storage.local.remove(key_macro).then((result) => {
                 if (chrome.runtime.lastError) {
                     console.error(chrome.runtime.lastError);
@@ -91,14 +95,23 @@ const CreateMacroElement = (name, urls, key_macro) => {
                 UpdateElementComponent(content, "class", "content");
             });
         });
+
+        if (!popup) {
+            console.error("Failed to create confirmation popup");
+            return;
+        }
+
         document.body.appendChild(popup);
     });
 
-    macro_name.addEventListener("click", UpdateElementComponent(macro_urls, "display", macro_urls.style.display === "none" ? "flex" : "none"));
+    macro_name.addEventListener("click", () => {
+        macro_urls.style.display = macro_urls.style.display === "none" ? "flex" : "none";
+    });
 
     // append elements to macro_div
     macro_name.appendChild(macro_urls);
     macro_delete.appendChild(macro_delete_icon);
+    macro_div.appendChild(macro_edit);
     macro_div.appendChild(macro_name);
     macro_div.appendChild(macro_delete);
 
