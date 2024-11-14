@@ -140,10 +140,15 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-left: 2px;
+    padding-left: 1px;
+    padding-right: 1px;
     height: fit-content;
-    font-size: medium;
     width: 100%;
+}
+
+.macro-text {
+    font-size: medium;
+    text-align: center;
 }
 
 .row-container {
