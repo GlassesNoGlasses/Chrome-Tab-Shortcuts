@@ -19,8 +19,8 @@ const ResetLocalStorage = () => {
 }
 
 const PopulateLocalStorage = async () => {
-  // storage format: {macro: {urls: [url1, url2, ...], active_url: url2, pinned_urls: [url1], name: "macro"}}
-  await SetToLocale('shift+g', {urls: ['https://www.facebook.com', 'https://www.youtube.com'], active_url: "https://www.youtube.com", pinned_urls: ['https://www.facebook.com'], name: "test"});
+  // storage format: {name: {urls: [url1, url2, ...], active_url: url2, pinned_urls: [url1], macro: "macro_keys"}}
+  await SetToLocale('test', {urls: ['https://www.facebook.com', 'https://www.youtube.com'], active_url: "https://www.youtube.com", pinned_urls: ['https://www.facebook.com'], macro: "shift+g"});
 }
 
 // main functions

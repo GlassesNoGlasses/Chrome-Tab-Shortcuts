@@ -16,7 +16,27 @@
         <!-- User Macro Shortcuts here -->
       </div>
     </div>
+
+    <div id="edit-view" class="edit-container">
+      <form id="edit-form" class="all-form">
+        <label for="edit-name">Name:</label>
+        <input type="text" id="edit-name" name="name" required>
+        <label for="edit-url">URL(s):</label>
+        <div id="edit-url-container" class="row-container">
+          <div id="edit-urls" class="url-list">
+          </div>
+        </div>
+        <div class="confirmation-buttons">
+          <button id="edit-save" type="button">
+            <span>Save Changes</span>
+          </button>
+          <button id="edit-cancel" type="button">
+            <span>cancel</span>
+          </button>
+        </div>
+      </form>
   </div>
+
   <div class="quick-options-container">
     <div class="quick-options">
         <button id="new-macro-button" class="option">
@@ -26,9 +46,8 @@
     </div>
   </div>
 
-
   <div id="add-macro-shortcut" class="modal">
-    <form id="add-form" class="add-form">
+    <form id="add-form" class="all-form">
       <label for="form-name">Name:</label>
       <input type="text" id="form-name" name="name" required>
       <label for="form-url">URL(s):</label>

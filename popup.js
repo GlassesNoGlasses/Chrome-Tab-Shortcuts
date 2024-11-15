@@ -43,6 +43,30 @@ function UpdateElementComponent(element, component, value = null) {
 };
 
 
+const EditMacroView = (macro_name) => {
+    if (!(macro_name in state.current_macros)) {
+        console.log(macro_name);
+        console.error("Failed to render Macro View");
+        return;
+    }
+
+    try {
+        const macro = state.current_macros[macro_name];
+        const edit_urls = document.getElementById("edit-urls");
+        document.getElementById("my-shortcuts").style.display = "none";
+        document.getElementById("edit-name").value = macro.name;
+
+        for (let url of macro.urls) {
+            const url_input = CreateNewURLInput(null, url);
+            edit_urls.appendChild(url_input);
+        }
+        
+    } catch (error) {
+        console.error(`Failed to edit macro: ${error}`);
+    }
+}
+
+
 const CreateMacroElement = (name, urls, key_macro) => {
     if (!name || !urls || !key_macro) {
         console.alert("Could not create macro element");
@@ -84,12 +108,7 @@ const CreateMacroElement = (name, urls, key_macro) => {
     };
 
     // add listeners
-    macro_edit.addEventListener("click", () => {
-        macro_text.readOnly = false;
-        macro_urls.style.display = macro_urls.style.display === "none" ? "flex" : "none";
-        UpdateElementComponent(macro_text, "backgroundColor", "green");
-    })
-
+    macro_edit.addEventListener("click", () => EditMacroView(name));
 
     macro_delete.addEventListener("click", () => {
         const content = document.getElementById("main-content");
@@ -319,14 +338,22 @@ const CreateTabs = () => {
     }
 }
 
-const AddNewURLOption = () => {
-    const url_input = document.getElementById("added-urls");
+const CreateNewURLInput = (class_name = "url-option", value = null) => {
     const url_option = document.createElement("input");
-    url_option.classList.add("url-option");
+    url_option.classList.add(class_name ? class_name : "url-option");
     url_option.placeholder = "Enter URL";
     url_option.required = true;
     url_option.name = "url_option";
-    url_input.appendChild(url_option);
+
+    if (value) url_option.value = value;
+
+    return url_option;
+}
+
+const AddNewURLOption = () => {
+    const url_list = document.getElementById("added-urls");
+    const url_input = CreateNewURLInput()
+    url_list.appendChild(url_input);
 };
 
 // activates on popup.html load
@@ -347,7 +374,7 @@ const InitializePopup = () => {
         for (let key in result) {
             const macro = result[key];
             state.current_macros[key] = {...macro};
-            AddNewMacro(macro.name, macro.urls, key);
+            AddNewMacro(key, macro.urls, macro.macro);
         }
     });
 }
