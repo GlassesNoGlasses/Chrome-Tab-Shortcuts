@@ -7,7 +7,7 @@ let state = {
     add_macro_form: false, // true if add macro form is visible
     keysPressed: [], // keys pressed by user
     isModifierKey: false, // true if a modifier key is pressed
-    current_macros: {} // current macros saved in local storage
+    current_macros: {}, // current macros saved in local storage
 }
 
 // helper functions
@@ -43,7 +43,7 @@ function UpdateElementComponent(element, component, value = null) {
 };
 
 
-const EditMacroView = (macro_name) => {
+const ShowEditView = (macro_name) => {
     if (!(macro_name in state.current_macros)) {
         console.log(macro_name);
         console.error("Failed to render Macro View");
@@ -54,6 +54,7 @@ const EditMacroView = (macro_name) => {
         const macro = state.current_macros[macro_name];
         const edit_urls = document.getElementById("edit-urls");
         document.getElementById("my-shortcuts").style.display = "none";
+        document.getElementById("edit-view").style.display = "flex";
         document.getElementById("edit-name").value = macro.name;
 
         for (let url of macro.urls) {
@@ -64,6 +65,19 @@ const EditMacroView = (macro_name) => {
     } catch (error) {
         console.error(`Failed to edit macro: ${error}`);
     }
+}
+
+
+const CloseEditView = () => {
+    const edit_urls = document.getElementById("edit-urls");
+    const edit_view = document.getElementById("edit-view");
+    const my_shortcuts = document.getElementById("my-shortcuts");
+    const edit_name = document.getElementById("edit-name");
+
+    edit_name.value = "";
+    edit_urls.replaceChildren();
+    edit_view.style.display = "none";
+    my_shortcuts.style.display = "flex";
 }
 
 
@@ -108,7 +122,7 @@ const CreateMacroElement = (name, urls, key_macro) => {
     };
 
     // add listeners
-    macro_edit.addEventListener("click", () => EditMacroView(name));
+    macro_edit.addEventListener("click", () => ShowEditView(name));
 
     macro_delete.addEventListener("click", () => {
         const content = document.getElementById("main-content");
@@ -192,6 +206,10 @@ const AddNewMacro = (name, urls, key_macro) => {
     if (!name || !urls || !key_macro) {
         console.alert("Invalid macro parameters");
         return;
+    } 
+    else if (document.getElementById(key_macro)) {
+        console.log("Macro already exists");
+        return
     }
 
     const macro_div = CreateMacroElement(name, urls, key_macro);
@@ -367,6 +385,8 @@ const InitializePopup = () => {
     AddEventListenerById("shortcut-key-input", "focusin", OnShortcutKeyInputFocus);
     AddEventListenerById("shortcut-key-input", "focusout", OnShortcutKeyInputBlur);
     AddEventListenerById("add-url", "click", AddNewURLOption);
+    AddEventListenerById("edit-save", "click", AddNewMacro);
+    AddEventListenerById("edit-back-button", "click", CloseEditView);
 
     // get all macros from local storage
     chrome.storage.local.get(null, (result) => {
