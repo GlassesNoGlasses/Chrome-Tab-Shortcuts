@@ -62,14 +62,12 @@ const ShowEditView = (macro_name) => {
 
     try {
         const macro = state.current_macros[macro_name];
-        const edit_urls = document.getElementById("edit-urls");
         document.getElementById("my-shortcuts").style.display = "none";
         document.getElementById("edit-view").style.display = "flex";
         document.getElementById("edit-name").value = macro.name;
 
         for (let url of macro.urls) {
-            const url_input = CreateNewURLInput(null, url);
-            edit_urls.appendChild(url_input);
+            AddNewURLOption('edit-urls', url);
         }
         
     } catch (error) {
@@ -91,6 +89,32 @@ const CloseEditView = () => {
 }
 
 
+const CreateIconButton = (id, onClick, img_icon = "./images/trash_can.svg", children = null) => {
+    // Creates a button with an icon.
+
+    if (!id || !onClick) {
+        console.error("Failed to create button. Required 'id' or 'onClick' parameters missing");
+        return null;
+    }
+
+    const button = document.createElement("button");
+    const button_icon = document.createElement("img");
+    button.id = id;
+    button_icon.src = img_icon;
+    button_icon.classList.add("short-icon");
+    
+    if (children) {
+        for (let child of children) {
+            button.appendChild(child);
+        }
+    }
+
+    button.appendChild(button_icon);
+    button.addEventListener("click", onClick);
+    return button;
+}
+
+
 const CreateMacroElement = (name, urls, key_macro) => {
     if (!name || !urls || !key_macro) {
         console.alert("Could not create macro element");
@@ -102,26 +126,18 @@ const CreateMacroElement = (name, urls, key_macro) => {
     const macro_name = document.createElement("div");
     const macro_text = document.createElement("input");
     const macro_urls = document.createElement("div");
-    const macro_delete = document.createElement("button");
-    const macro_delete_icon = document.createElement("img");
-    const macro_edit = document.createElement("button");
-    const macro_edit_icon = document.createElement("img");
-
+    
     // add classes to elements
     macro_div.classList.add("macro-item");
     macro_name.classList.add("macro-name");
     macro_text.classList.add("macro-text");
     macro_urls.classList.add("macro-urls");
-    macro_delete_icon.classList.add("short-icon");
-    macro_edit_icon.classList.add("short-icon");
-
-
+    
+    
     // set content
     macro_div.id = name;
     macro_text.value = `${key_macro}: ${name}`;
     macro_text.readOnly = true;
-    macro_delete_icon.src = "./images/trash_can.svg";
-    macro_edit_icon.src = "./images/edit.svg";
     
     for (let url of urls) {
         const url_anchor = document.createElement("a");
@@ -131,10 +147,13 @@ const CreateMacroElement = (name, urls, key_macro) => {
         macro_urls.appendChild(url_anchor);
     };
 
-    // add listeners
-    macro_edit.addEventListener("click", () => ShowEditView(name));
+    // event listeners for macro elements
+    macro_name.addEventListener("click", () => {
+        macro_urls.style.display = macro_urls.style.display === "none" ? "flex" : "none";
+    });
 
-    macro_delete.addEventListener("click", () => {
+    // remove macro element callback function
+    function RemoveMacroElement() {
         const content = document.getElementById("main-content");
 
         macro_name.removeEventListener("click", UpdateElementComponent);
@@ -159,20 +178,19 @@ const CreateMacroElement = (name, urls, key_macro) => {
         }
 
         document.body.appendChild(popup);
-    });
+    }
 
-    macro_name.addEventListener("click", () => {
-        macro_urls.style.display = macro_urls.style.display === "none" ? "flex" : "none";
-    });
+    // add buttons
+    const macro_edit_button = CreateIconButton("edit-button", () => ShowEditView(name), "./images/edit.svg");
+    const macro_delete_button = CreateIconButton("delete-button", RemoveMacroElement, "./images/trash_can.svg");
 
+    
     // append elements to macro_div
     macro_name.appendChild(macro_text);
     macro_name.appendChild(macro_urls);
-    macro_delete.appendChild(macro_delete_icon);
-    macro_edit.appendChild(macro_edit_icon);
-    macro_div.appendChild(macro_edit);
+    macro_div.appendChild(macro_edit_button);
     macro_div.appendChild(macro_name);
-    macro_div.appendChild(macro_delete);
+    macro_div.appendChild(macro_delete_button);
 
     return macro_div;
 }
@@ -367,7 +385,8 @@ const CreateTabs = () => {
     }
 }
 
-const CreateNewURLInput = (class_name = "url-option", value = null) => {
+const CreateNewURLInput = (value = null, class_name = "url-option") => {
+    // Creates a new URL input element
     const url_option = document.createElement("input");
     url_option.classList.add(class_name ? class_name : "url-option");
     url_option.placeholder = "Enter URL";
@@ -379,10 +398,18 @@ const CreateNewURLInput = (class_name = "url-option", value = null) => {
     return url_option;
 }
 
-const AddNewURLOption = () => {
-    const url_list = document.getElementById("added-urls");
-    const url_input = CreateNewURLInput()
-    url_list.appendChild(url_input);
+const AddNewURLOption = (id = "added-urls", url = null) => {
+    // Creates a new URL option element and appends it to the URL list
+    const url_list = document.getElementById(id);
+    const url_input = CreateNewURLInput(url);
+
+    const url_option = document.createElement("div");
+    const url_option_delete = CreateIconButton("delete-url", () => url_option.remove(), "./images/trash_can.svg");
+    url_option.classList.add("url-option");
+    url_option.appendChild(url_input);
+    url_option.appendChild(url_option_delete);
+
+    url_list.appendChild(url_option);
 };
 
 // activates on popup.html load
