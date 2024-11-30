@@ -16,6 +16,16 @@ const FilterAndFormatKeys = (keys) => {
     filtered_keys.sort((key1, key2) => key2.length - key1.length || key2.localeCompare(key1));
     return filtered_keys.join('+');
 }
+
+const FetchLocalByMacro = (key_macro) => {
+    for (let key in state.current_macros) {
+        if (key_macro === state.current_macros[key].macro) {
+            return state.current_macros[key];
+        }
+    };
+
+    return null;
+}
   
 
 function UpdateElementComponent(element, component, value = null) {
@@ -338,11 +348,12 @@ const CreateTabs = () => {
 
     try {
         const key_macro = FilterAndFormatKeys(state.keysPressed);
-        if (!state.current_macros[key_macro]) return;
+        const macro_object = FetchLocalByMacro(key_macro);
+        if (!macro_object) return;
     
-        const urls = state.current_macros[key_macro].urls;
-        const active_url = state.current_macros[key_macro].active_url;
-        const pinned_urls = state.current_macros[key_macro].pinned_urls;
+        const urls = macro_object.urls;
+        const active_url = macro_object.active_url;
+        const pinned_urls = macro_object.pinned_urls;
     
         urls.forEach(url => {
             chrome.tabs.create({ 

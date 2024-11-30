@@ -202,7 +202,6 @@
 .edit-container {
     display: none;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
@@ -211,8 +210,8 @@
 .top-left {
     display: flex;
     position: fixed;
-    width: 100%;
+    width: fit-content;
     height: 100%;
-    bottom: 0;
-    left: 0;
+    bottom: -5px;
+    left: 5px;
 }

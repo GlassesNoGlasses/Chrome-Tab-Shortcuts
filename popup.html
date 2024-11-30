@@ -18,29 +18,32 @@
     </div>
 
     <div id="edit-view" class="edit-container">
-      <div class="top-left">
-          <button id="edit-back-button" class="option">
-            <img src="images/back-arrows.svg" alt="Back" class="icon">
-            <span>Back</span>
-          </button>
-      </div>
-      <form id="edit-form" class="all-form">
-        <label for="edit-name">Name:</label>
-        <input type="text" id="edit-name" name="name" required>
-        <label for="edit-url">URL(s):</label>
-        <div id="edit-url-container" class="row-container">
-          <div id="edit-urls" class="url-list">
+      <div class="macro-container">
+        <h1>Editing</h1>
+        <div class="top-left">
+            <button id="edit-back-button" class="option">
+              <img src="images/back-arrows.svg" alt="Back" class="icon">
+              <span>Back</span>
+            </button>
+        </div>
+        <form id="edit-form" class="all-form">
+          <label for="edit-name">Name:</label>
+          <input type="text" id="edit-name" name="name" required>
+          <label for="edit-url">URL(s):</label>
+          <div id="edit-url-container" class="row-container">
+            <div id="edit-urls" class="url-list">
+            </div>
           </div>
-        </div>
-        <div class="confirmation-buttons">
-          <button id="edit-save">
-            <span>Save Changes</span>
-          </button>
-          <button id="edit-cancel">
-            <span>cancel</span>
-          </button>
-        </div>
-      </form>
+          <div class="confirmation-buttons">
+            <button id="edit-save">
+              <span>Save Changes</span>
+            </button>
+            <button id="edit-cancel">
+              <span>cancel</span>
+            </button>
+          </div>
+        </form>
+      </div>
   </div>
 
   <div class="quick-options-container">

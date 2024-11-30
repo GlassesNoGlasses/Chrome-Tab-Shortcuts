@@ -12,7 +12,7 @@ document.addEventListener('keydown', (event) => {
 
 // Clear all keys pressed and send to background
 document.addEventListener('keyup', () => {
-    if (isModifierKey) {
+    if (isModifierKey && keysPressed.length > 0) {
         (async () => {
             console.log("SENDING TO BACKGROUND: ", keysPressed);
             await chrome.runtime.sendMessage({from: "content", keys: keysPressed});
