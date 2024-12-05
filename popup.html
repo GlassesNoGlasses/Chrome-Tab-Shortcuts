@@ -10,6 +10,8 @@
 
 <body id="body" class="main-body">
   <div id="main-content" class="content">
+
+    <!-- Current User Shortcuts -->
     <div id="my-shortcuts" class="macro-container">
       <h1>My Shortcuts</h1>
       <div id="shortcuts" class="macro-list">
@@ -17,6 +19,7 @@
       </div>
     </div>
 
+    <!-- Edit Macro View -->
     <div id="edit-view" class="edit-container">
       <div class="macro-container">
         <h1>Editing</h1>
@@ -29,7 +32,7 @@
         <form id="edit-form" class="all-form">
           <label for="edit-name">Name:</label>
           <input type="text" id="edit-name" name="name" required>
-          <label for="edit-url">URL(s):</label>
+          <label for="edit-urls">URL(s):</label>
           <div id="edit-url-container" class="row-container">
             <div id="edit-urls" class="url-list">
             </div>
@@ -44,7 +47,34 @@
           </div>
         </form>
       </div>
-  </div>
+    </div>
+    
+    <!-- Add Macro Form -->
+    <div id="add-macro-shortcut" class="modal">
+      <div class="top-left">
+        <button id="add-macro-back-button" class="option">
+          <img src="images/back-arrows.svg" alt="Back" class="icon">
+          <span>Back</span>
+        </button>
+      </div>
+      <form id="add-form" class="all-form">
+        <label for="form-name">Name:</label>
+        <input type="text" id="form-name" name="name" required>
+        <label for="form-url">URL(s):</label>
+        <div id="added-url-container" class="row-container">
+          <div id="added-urls" class="url-list">
+            <input class="url-option" placeholder="Enter URL" type="text" id="form-url" name="url" required>
+          </div>
+          <button id="add-url" type="button">
+            <img src="images/add_circle.svg" alt="Add" class="icon">
+            <span>Add</span>
+          </button>
+        </div>
+        <label for="shortcut-key-input">Shortcut:</label>
+        <input type="text" id="shortcut-key-input" name="shortcut" required>
+        <button id="add-macro">Add</button>
+      </form>
+    </div>
 
   <div class="quick-options-container">
     <div class="quick-options">
@@ -53,26 +83,6 @@
           <span class="quick-new-macro-text">New Macro</span>
         </button>
     </div>
-  </div>
-
-  <div id="add-macro-shortcut" class="modal">
-    <form id="add-form" class="all-form">
-      <label for="form-name">Name:</label>
-      <input type="text" id="form-name" name="name" required>
-      <label for="form-url">URL(s):</label>
-      <div id="added-url-container" class="row-container">
-        <div id="added-urls" class="url-list">
-          <input class="url-option" placeholder="Enter URL" type="text" id="form-url" name="url" required>
-        </div>
-        <button id="add-url" type="button">
-          <img src="images/add_circle.svg" alt="Add" class="icon">
-          <span>Add</span>
-        </button>
-      </div>
-      <label for="shortcut-key-input">Shortcut:</label>
-      <input type="text" id="shortcut-key-input" name="shortcut" required>
-      <button id="add-macro">Add</button>
-    </form>
   </div>
 </body>
 

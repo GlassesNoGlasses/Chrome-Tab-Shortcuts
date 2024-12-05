@@ -4,6 +4,8 @@
 // state variables
 let state = {
     // set state variables here
+    last_displayed: false, // last displayed element by id
+    current_display: "my-shortcuts", // current displayed element by id
     add_macro_form: false, // true if add macro form is visible
     keysPressed: [], // keys pressed by user
     isModifierKey: false, // true if a modifier key is pressed
@@ -26,36 +28,27 @@ const FetchLocalByMacro = (key_macro) => {
 
     return null;
 }
-  
 
-function UpdateElementComponent(element, component, value = null) {
-    if (!element || !component) {
+
+const BackButtonHandler = () => {
+    // Handles the back button click event
+    const prev_display = document.getElementById(state.last_displayed ? state.last_displayed : "my-shortcuts");
+    const current_display = document.getElementById(state.current_display);
+
+    if (!prev_display || !current_display) {
+        console.error("Failed to handle back button click");
         return;
     }
 
-    try {
-        switch (component.toLowerCase().trim()) {
-            case "display":
-                element.style.display = value;
-                break;
-            case "class":
-                element.className = value;
-                break;
-            case "backgroundColor":
-                element.style.backgroundColor = value;
-                break;
-            default:
-                break;
-        }
-    } catch (error) {
-        console.error(`Failed to update component: ${component}`);
-    }
-};
+    prev_display.style.display = "flex";
+    current_display.style.display = "none";
+    state.current_display = state.last_displayed;
+    state.last_displayed = state.current_display;
+}
 
 
 const ShowEditView = (macro_name) => {
     if (!(macro_name in state.current_macros)) {
-        console.log(macro_name);
         console.error("Failed to render Macro View");
         return;
     }
@@ -69,6 +62,9 @@ const ShowEditView = (macro_name) => {
         for (let url of macro.urls) {
             AddNewURLOption('edit-urls', url);
         }
+
+        state.last_displayed = state.current_display;
+        state.current_display = "edit-view";
         
     } catch (error) {
         console.error(`Failed to edit macro: ${error}`);
@@ -78,14 +74,15 @@ const ShowEditView = (macro_name) => {
 
 const CloseEditView = () => {
     const edit_urls = document.getElementById("edit-urls");
-    const edit_view = document.getElementById("edit-view");
-    const my_shortcuts = document.getElementById("my-shortcuts");
     const edit_name = document.getElementById("edit-name");
 
     edit_name.value = "";
-    edit_urls.replaceChildren();
-    edit_view.style.display = "none";
-    my_shortcuts.style.display = "flex";
+
+    while (edit_urls.firstChild) {
+        edit_urls.removeChild(edit_urls.firstChild);
+    }
+
+    BackButtonHandler();
 }
 
 
@@ -156,8 +153,8 @@ const CreateMacroElement = (name, urls, key_macro) => {
     function RemoveMacroElement() {
         const content = document.getElementById("main-content");
 
-        macro_name.removeEventListener("click", UpdateElementComponent);
-        UpdateElementComponent(content, "class", "content-shadow");
+        macro_name.removeEventListener("click");
+        content.className = "content-shadow";
         
         const popup = ConfirmationPopup(`Are you sure you want to delete macro: ${name}?`, () => {
             chrome.storage.local.remove(key_macro).then((result) => {
@@ -168,7 +165,7 @@ const CreateMacroElement = (name, urls, key_macro) => {
                 
                 delete state.current_macros[key_macro];
                 macro_div.remove();
-                UpdateElementComponent(content, "class", "content");
+                content.className = "content";
             });
         });
 
@@ -280,17 +277,23 @@ const SaveMacro = (name, urls, key_macro) => {
 
 const ToggleMacroForm = () => {
     const add_macro_div = document.getElementById("add-macro-shortcut");
-    const main_content = document.getElementById("main-content");
-
+    const current_display = document.getElementById(state.current_display);
+    
     if (state.add_macro_form) {
-        UpdateElementComponent(add_macro_div, "display", "none");
+        console.log("Closing Add Macro Form");
+        add_macro_div.style.display = "none";
         state.add_macro_form = false;
         return;
     }
-
+    
     const form = document.getElementById("add-form");
-    UpdateElementComponent(main_content, "class", "content-shadow");
-    UpdateElementComponent(add_macro_div, "display", "flex");
+    current_display.style.display = "none";
+    add_macro_div.style.display = "flex";
+    
+    // update states
+    state.add_macro_form = true;
+    state.last_displayed = state.current_display;
+    state.current_display = "add-macro-shortcut";
 }
 
 const AddMacroFormSubmit = () => {
@@ -425,6 +428,7 @@ const InitializePopup = () => {
     AddEventListenerById("add-url", "click", AddNewURLOption);
     AddEventListenerById("edit-save", "click", AddNewMacro);
     AddEventListenerById("edit-back-button", "click", CloseEditView);
+    AddEventListenerById("add-macro-back-button", "click", BackButtonHandler);
 
     // get all macros from local storage
     chrome.storage.local.get(null, (result) => {
