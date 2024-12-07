@@ -32,7 +32,9 @@ const FetchLocalByMacro = (key_macro) => {
 
 const BackButtonHandler = () => {
     // Handles the back button click event
-    const prev_display = document.getElementById(state.last_displayed ? state.last_displayed : "my-shortcuts");
+
+    state.last_displayed = state.last_displayed ? state.last_displayed : "my-shortcuts"
+    const prev_display = document.getElementById(state.last_displayed);
     const current_display = document.getElementById(state.current_display);
 
     if (!prev_display || !current_display) {
@@ -40,10 +42,14 @@ const BackButtonHandler = () => {
         return;
     }
 
+    
+    // update displays
+    const temp = state.current_display;
     prev_display.style.display = "flex";
     current_display.style.display = "none";
     state.current_display = state.last_displayed;
-    state.last_displayed = state.current_display;
+    state.last_displayed = temp;
+    console.log("PREV: ", state.last_displayed, "CURR: ", state.current_display)
 }
 
 
@@ -260,13 +266,11 @@ const SaveMacro = (name, urls, key_macro) => {
 
         // save to local storage and add to popup if successful
         chrome.storage.local.set(obj).then((result) => {
-            console.log("Saving Result: ", result);
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 return;
             }
 
-            console.log("Saved macro: ", obj);
             AddNewMacro(name, urls, key_macro);
         });
 
@@ -275,14 +279,20 @@ const SaveMacro = (name, urls, key_macro) => {
     }
 }
 
+
+const CloseMacroForm = () => {
+    state.add_macro_form = false;
+    BackButtonHandler()
+}
+
+
 const ToggleMacroForm = () => {
     const add_macro_div = document.getElementById("add-macro-shortcut");
     const current_display = document.getElementById(state.current_display);
     
     if (state.add_macro_form) {
         console.log("Closing Add Macro Form");
-        add_macro_div.style.display = "none";
-        state.add_macro_form = false;
+        CloseMacroForm();
         return;
     }
     
@@ -428,7 +438,7 @@ const InitializePopup = () => {
     AddEventListenerById("add-url", "click", AddNewURLOption);
     AddEventListenerById("edit-save", "click", AddNewMacro);
     AddEventListenerById("edit-back-button", "click", CloseEditView);
-    AddEventListenerById("add-macro-back-button", "click", BackButtonHandler);
+    AddEventListenerById("add-macro-back-button", "click", CloseMacroForm);
 
     // get all macros from local storage
     chrome.storage.local.get(null, (result) => {
