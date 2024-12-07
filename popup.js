@@ -49,7 +49,6 @@ const BackButtonHandler = () => {
     current_display.style.display = "none";
     state.current_display = state.last_displayed;
     state.last_displayed = temp;
-    console.log("PREV: ", state.last_displayed, "CURR: ", state.current_display)
 }
 
 
@@ -281,6 +280,19 @@ const SaveMacro = (name, urls, key_macro) => {
 
 
 const CloseMacroForm = () => {
+    // Callback to close add-macro form
+
+    // reset form fields
+    const form_urls = document.getElementById("added-urls");
+    document.getElementById("form-url").value = "";
+    document.getElementById("form-name").value = "";
+    document.getElementById("shortcut-key-input").value = "";
+    
+    while (form_urls.childElementCount > 1) {
+        form_urls.removeChild(form_urls.lastChild);
+    }
+
+    // update states and go back
     state.add_macro_form = false;
     BackButtonHandler()
 }
@@ -325,7 +337,7 @@ const RecordKeyboardInputs = (id, keyupCallback) => {
     AddEventListenerById(id, "keydown", (event) => {
         !event.repeat && state.keysPressed.push(event.key.toLowerCase());
         state.isModifierKey = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
-    }, false);
+    });
 
     AddEventListenerById(id, "keyup", () => {
         keyupCallback && keyupCallback();
@@ -339,7 +351,7 @@ const RemoveKeyboardRecorder = (id) => {
     RemoveEventListenerById(id, "keyup");
 }
 
-const AddEventListenerById = (id, event, callback = null) => {
+const AddEventListenerById = (id, event, callback) => {
     try {
         const element = document.getElementById(id);
         element.addEventListener(event, callback);
@@ -411,14 +423,14 @@ const CreateNewURLInput = (value = null, class_name = "url-option") => {
     return url_option;
 }
 
-const AddNewURLOption = (id = "added-urls", url = null) => {
+const AddNewURLOption = (id, url = null) => {
     // Creates a new URL option element and appends it to the URL list
     const url_list = document.getElementById(id);
     const url_input = CreateNewURLInput(url);
 
     const url_option = document.createElement("div");
     const url_option_delete = CreateIconButton("delete-url", () => url_option.remove(), "./images/trash_can.svg");
-    url_option.classList.add("url-option");
+    url_option.className = "url-option";
     url_option.appendChild(url_input);
     url_option.appendChild(url_option_delete);
 
@@ -435,7 +447,7 @@ const InitializePopup = () => {
     RecordKeyboardInputs("body", CreateTabs);
     AddEventListenerById("shortcut-key-input", "focusin", OnShortcutKeyInputFocus);
     AddEventListenerById("shortcut-key-input", "focusout", OnShortcutKeyInputBlur);
-    AddEventListenerById("add-url", "click", AddNewURLOption);
+    AddEventListenerById("add-url", "click", () => AddNewURLOption('added-urls'));
     AddEventListenerById("edit-save", "click", AddNewMacro);
     AddEventListenerById("edit-back-button", "click", CloseEditView);
     AddEventListenerById("add-macro-back-button", "click", CloseMacroForm);
